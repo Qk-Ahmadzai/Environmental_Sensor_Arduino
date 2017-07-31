@@ -16,16 +16,36 @@
 #define DHT_PIN       A3
 #define MOISTURE_PIN  A4
 
+#define VBATPIN       A9
+
 //DHT initalization
 #define DHTTYPE DHT22
 DHT dht(DHT_PIN, DHTTYPE);
 
-#define TAKE_AVERAGE_OF_X_READINGS            2
+#define TAKE_AVERAGE_OF_X_READINGS            1
 #define SENSOR_READING_DELAY                  100
 
 // Soil Moisture Calibration Values
-double Dry=807; //Measured value for air
-double Wet=418; //Measured value for water
+
+// Environmental Sensor 1
+//double Dry = 800; // Measured value for air
+//double Wet = 397; // Measured value for water
+
+// Environmental Sensor 2
+//double Dry = 786; // Measured value for air
+//double Wet = 392; // Measured value for water
+
+// Environmental Sensor 3
+//double Dry = 794; // Measured value for air
+//double Wet = 390; // Measured value for water
+
+// Environmental Sensor 4
+//double Dry = 788; // Measured value for air
+//double Wet = 393; // Measured value for water
+
+// Environmental Sensor 5
+double Dry = 801; // Measured value for air
+double Wet = 397; // Measured value for water
 
 #define FACTORYRESET_ENABLE         0
 #define MINIMUM_FIRMWARE_VERSION    "0.6.6"
@@ -49,6 +69,11 @@ void setup() {
   {
     error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
   }
+
+    if (! ble.sendCommandCheckOK(F( "AT+GAPDEVNAME=Environmental Sensor 5" )) ) {
+    error(F("Could not set device name?"));
+    }
+  
   Serial.println( F("OK!") );
     if ( FACTORYRESET_ENABLE )
   {
@@ -72,13 +97,17 @@ void setup() {
       delay(500);
   }
 
-  
-
   dht.begin();
 
 }
 
 void loop() {
+
+//  float measuredvbat = analogRead(VBATPIN);
+//  measuredvbat *= 2;
+//  measuredvbat *= 3.3;
+//  measuredvbat /= 1024;
+//  Serial.print("VBat: "); Serial.println(measuredvbat);
 
   ble.println("AT+BLEUARTRX");
   ble.readline();
